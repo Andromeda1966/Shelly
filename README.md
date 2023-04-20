@@ -105,9 +105,7 @@ Parametri:
 In questo esempio viene configurata per il device **shellyplus1-7c87ce720ad8** una password ‘**NuovaPassword’**
 Per ottenere il parametro **ha1** avviene calcolato lo SHA256 di una stringa così composta user:realm:password.<br/>
 
-<br/>
-* **Esempio: shellySetAuth()**
-<br/>
+<br/> 
 
  **admin:shellyplus1-7c87ce720ad8:NuovaPassword**
 
@@ -121,8 +119,11 @@ Il comando da inviare al device per configurare l’accesso ai comandi è il seg
 ```
 http://192.168.33.1/rpc/Shelly.SetAuth?user="admin"&realm="shellyplus1-7c87ce720ad8"&ha1="7a89f0e64fac6814c3e5281dd0698532bc93d7d7f20ccf8ae995dcd58c22c8a7"
 ```
-
 <br/>
+
+* **Esempio: shellySetAuth()**
+
+
 <br/>
 
 
