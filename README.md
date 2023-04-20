@@ -1,81 +1,26 @@
-<!-----
-
-You have some errors, warnings, or alerts. If you are using reckless mode, turn it off to see inline alerts.
-* ERRORs: 0
-* WARNINGs: 0
-* ALERTS: 7
-
-Conversion time: 1.449 seconds.
-
-
-Using this Markdown file:
-
-1. Paste this output into your source file.
-2. See the notes and action items below regarding this conversion run.
-3. Check the rendered output (headings, lists, code blocks, tables) for proper
-   formatting and use a linkchecker before you publish this page.
-
-Conversion notes:
-
-* Docs to Markdown version 1.0β34
-* Thu Apr 20 2023 02:09:23 GMT-0700 (PDT)
-* Source doc: Integrazione Bazme - Shelly
-* This document has images: check for >>>>>  gd2md-html alert:  inline image link in generated source and store images to your server. NOTE: Images in exported zip file from Google Docs may not appear in  the same order as they do in your doc. Please check the images!
-
------>
-
-
-<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 0; ALERTS: 7.</p>
-<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
-
-<p style="color: red; font-weight: bold">Links to alert messages:</p><a href="#gdcalert1">alert1</a>
-<a href="#gdcalert2">alert2</a>
-<a href="#gdcalert3">alert3</a>
-<a href="#gdcalert4">alert4</a>
-<a href="#gdcalert5">alert5</a>
-<a href="#gdcalert6">alert6</a>
-<a href="#gdcalert7">alert7</a>
-
-<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
-
 
 **Keyless**
 
 Questo documento descrive l’integrazione tra l’applicazione BazMe e i device Shelly con lo scopo di dare la possibilità di accesso ad apparati con elettroserrature 12v o 220v.
-
 Il device Shelly1 Plus d’ora in poi denominato Shelly può essere alimentato sia con una tensione di 12v oppure con una tensione  a 220v.
-
 Lo Shelly permette possiede un rele a 220v al suo interno azionabile attraverso dei comandi esterni. Questi comandi possono essere inviati utilizzando una serie di protocolli, quali: HTTP, RPC, WebSocket, MQTT e UDP.
 
 In questo progetto utilizzeremo l’interfaccia RPC con un device Shelly1 Plus (Fig.1).
 
-
-
-<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image1.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image1.png "image_tooltip")
+![alt_text](images/image1.jpg "image_tooltip")
 
 
 Fig. 1
 
 Per eseguire un reset di fabbrica del device basta premere per 10 secondi il pulsante sul retro del device.
-
 Il reset comporterà la perdita di tutte le configurazioni e il device verrà riportato allo stato iniziale.
 
 **Installazione Hardware**
 
 Lo Shelly ha due possibilità di alimentazione 220v o 12v 
-
 Il collegamento va effettuato di conseguenza seguendo uno dei seguenti schemi:
 
-
-
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image2.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image2.png "image_tooltip")
-
+![alt_text](images/image2.jpg "image_tooltip")
 
 In questo schema si possono vedere i collegamenti dei carichi da effettuare sui pin O e I a sinistra dello Shelly.
 
@@ -95,11 +40,6 @@ Per effettuare la configurazione nell’App BazMe seguire i seguenti passi:
 2. Selezionare l’entità a cui si vuole aggiungere il device (es.: Condominio Via Maffucci).
 3. Premere il pulsante** Configura Nuovo Device**.
 4. Al termine della configurazione verrà creato un nuovo Device nell'elenco come in Fig. 2.
-
-
-
-<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image3.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
 
 ![alt_text](images/image3.jpg "image_tooltip")
 
@@ -135,26 +75,17 @@ http://192.168.33.1/rpc/WiFi.SetConfig?config={"ap":{"ssid":"ShellyPlus1-7C87CE7
 
 Il comando è** WiFi.SetConfig** a cui viene passato un json contenente vari parametri tra cui la password. Qui sotto i vari parametri possibili.
 
-
-
-<p id="gdcalert4" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image4.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert5">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 ![alt_text](images/image4.png "image_tooltip")
 
 
 Il parametro SSID rappresenta il punto di accesso WiFi che si vuole configurare.
-
 Il parametro PASS è la password da settare.
-
 Il parametro ENABLE deve essere impostato a true.
 
 **Configurazione accesso ai comandi del device**
 
 Il device espone dei comandi che permettono di utilizzare i servizi offerti dallo Shelly.
-
 Per proteggere tutti i comandi è necessario proteggere con una password il loro utilizzo.
-
 L’ip del device sarà sempre **192.168.3.1**.
 
 
@@ -164,16 +95,10 @@ L’ip del device sarà sempre **192.168.3.1**.
     **<span style="text-decoration:underline;">Shelly.SetAuth</span>**
 
 
-
-
-<p id="gdcalert5" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image5.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert6">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 ![alt_text](images/image5.png "image_tooltip")
 
 
 Parametri:
-
 
 
 * **user**: Deve sempre essere **admin**
@@ -215,11 +140,6 @@ L’ip del device sarà sempre **192.168.3.1**.
     **<span style="text-decoration:underline;">Switch.Set</span>**
 
 
-
-
-<p id="gdcalert6" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image6.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert7">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 ![alt_text](images/image6.png "image_tooltip")
 
 
@@ -256,10 +176,6 @@ Il comando andrà inviato **due volte**.
 La **prima** andrà in errore **401 Unauthorized** ma fornirà alcuni parametri necessari alla **seconda** richiesta di autenticazione.
 
 Di seguito un diagramma di funzionamento.
-
-
-
-<p id="gdcalert7" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image7.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert8">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
 ![alt_text](images/image7.png "image_tooltip")
