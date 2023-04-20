@@ -1,11 +1,10 @@
 
 var axios = require('axios')
-//var util = require('util')
+var util = require('util')
 var crypto = require("crypto");
-
-let ShellyPassword = "NuovaPassword";
-let host = "192.168.33.1" //  "192.168.2.240";
-const ShellyRealm = 'shellyplus1-7c87ce7213ec'
+var ShellyPassword = "NuovaPassword";
+var host = "192.168.33.1"
+var ShellyRealm = 'shellyplus1-7c87ce7213ec'
 
 const match_dquote_re = /^\"|\"$/g;
 const match_coma_space_re = /,? /;
@@ -63,7 +62,7 @@ const digest = (username, password, realm, method, uri, nonce, nc, cnonce) => {
   return response;
 }
 
-complementAuthParams = (authParams, username, password) => {
+complementAuthParams = (authParams, uri, username, password) => {
 
   var digestAuthObject = {}
 
@@ -73,53 +72,27 @@ complementAuthParams = (authParams, username, password) => {
   digestAuthObject.cnonce = String(Math.floor(Math.random() * 10e8))
   digestAuthObject.method = 'GET'
   digestAuthObject.realm = authParams.realm
-  digestAuthObject.uri = '/rpc/Switch.Set?id=0&on=true&toggle_after=1'
+  digestAuthObject.uri = uri
 
   digestAuthObject.ha1 = HexHash(username + ':' + authParams.realm + ':' + password);
-  digestAuthObject.ha2 = HexHash(`${authParams.method}:${authParams.uri}`)
+  digestAuthObject.ha2 = HexHash(`${digestAuthObject.method}:${digestAuthObject.uri}`)
 
   digestAuthObject.resp = digest(username, password, digestAuthObject.realm, digestAuthObject.method, digestAuthObject.uri, digestAuthObject.nonce, digestAuthObject.nc, digestAuthObject.cnonce)
 
   return digestAuthObject
 };
 
-const setWiFi = async () => {
+const shellySetWiFi = async () => {
   var url = `http://${host}/rpc/WiFi.SetConfig?config={"ap":{"ssid":"${ShellyRealm}","pass":"${ShellyPassword}","enable":true}}`
-  var response = await axios.get(url)
-    .catch((error) => {
-      console.log('setAuth Error: ', error);
-    });
-
-  console.log('setWiFi response:', response);
-}
-
-const setAuth = async () => {
-  //const ssid = 'shellyplus1-7c87ce7213ec'
-  const ha1 = HexHash(`admin:${ShellyRealm}:${ShellyPassword}`)  // "7a89f0e64fac6814c3e5281dd0698532bc93d7d7f20ccf8ae995dcd58c22c8a7"
-
-  var url = `http://${host}/rpc/Shelly.SetAuth?user="admin"&realm="${ShellyRealm}"&ha1="${ha1}"`
-  var response = await axios.get(url)
-    .catch((error) => {
-      console.log('setAuth Error: ', error);
-    });
-
-  console.log('setAuth response:', response);
-}
-
-const toggleSwitch = async () => {
-
-   var url = `http://${host}/rpc/Switch.Set?id=0&on=true&toggle_after=1`
 
   try {
-    var response = await axios({ method: 'get', url: url, headers: { 'Parametro': 'PAR1' } })
-
+    var response = await axios({ method: 'get', url: url })
   } catch (error) {
     if (!error.response) {
-      console.error('NON FUNZIONA toggleSwitch response:', error.message);
+      console.error('NON FUNZIONA shellySetWiFi response:', error.message);
     }
 
     if (error.response.status == 401) {
-      // look up the challenge header
       let authHeader = error.response.headers["www-authenticate"];
       if (authHeader == undefined)
         return reject(new Error("WWW-Authenticate header is missing in the response?!"));
@@ -127,7 +100,81 @@ const toggleSwitch = async () => {
       try {
 
         const authParams = extractAuthParams(authHeader);
-        const result = complementAuthParams(authParams, "admin", ShellyPassword);
+        const result = complementAuthParams(authParams, `/rpc/WiFi.SetConfig?config={"ap":{"ssid":"${ShellyRealm}","pass":"${ShellyPassword}","enable":true}}`, "admin", ShellyPassword);
+
+        var response = await axios({
+          method: 'get',
+          url: url,
+          headers: {
+            Authorization: `Digest username="admin", realm="${result.realm}", nonce=${result.nonce}, uri=${result.uri}, algorithm="SHA-256", qop=${result.qop}, nc=${result.nc}, cnonce=${result.cnonce}, response=${result.resp}`
+          }
+        })
+
+        console.log('shellySetWiFi response:', response);
+
+      } catch (error) {
+        console.error('shellySetWiFi Error:', error);
+        return
+      }
+    }
+  }
+  console.log('shellySetWiFi Password OK');
+}
+
+const shellySetAuth = async () => {
+  const ha1 = HexHash(`admin:${ShellyRealm}:${ShellyPassword}`)  // "7a89f0e64fac6814c3e5281dd0698532bc93d7d7f20ccf8ae995dcd58c22c8a7"
+
+  var url = `http://${host}/rpc/Shelly.SetAuth?user="admin"&realm="${ShellyRealm}"&ha1="${ha1}"`
+  var response = await axios.get(url)
+    .catch((error) => {
+      console.error('shellySetAuth Error: ', error);
+      return
+    });
+  console.log('shellySetAuth Password OK');
+}
+
+const shellyReboot = async () => {
+
+  var url = `http://${host}/rpc/Shelly.Reboot`
+  var response = await axios.get(url)
+    .then((result) => {
+      console.log('shellyReboot OK');
+    })
+    .catch((error) => {
+      console.error('shellyReboot Error: ', error);
+    });
+}
+
+const shellyReset = async () => {
+
+  var url = `http://${host}/rpc/Shelly.FactoryReset`
+  await axios.get(url)
+    .catch((error) => {
+      console.error('shellyReset Error: ', error);
+    });
+  console.log('shellyReset OK');
+}
+
+const shellyToggleSwitch = async () => {
+
+  var url = `http://${host}/rpc/Switch.Set?id=0&on=true&toggle_after=1`
+
+  try {
+    var response = await axios({ method: 'get', url: url })
+  } catch (error) {
+    if (!error.response) {
+      console.error('NON FUNZIONA toggleSwitch response:', error.message);
+    }
+
+    if (error.response.status == 401) {
+      let authHeader = error.response.headers["www-authenticate"];
+      if (authHeader == undefined)
+        return reject(new Error("WWW-Authenticate header is missing in the response?!"));
+
+      try {
+
+        const authParams = extractAuthParams(authHeader);
+        const result = complementAuthParams(authParams, '/rpc/Switch.Set?id=0&on=true&toggle_after=1', "admin", ShellyPassword);
 
         var response = await axios({
           method: 'get',
@@ -146,13 +193,45 @@ const toggleSwitch = async () => {
   }
 }
 
+const shellyGetDeviceName = async () => {
 
-// Set Password WiFi - Setta la password del WiFi. Bisogna ricollegarsi nuovamente specificando la password usata
-// setWiFi()
+  var url = `http://${host}/rpc/Shelly.GetDeviceInfo`
+  var response = await axios.get(url)
+    .catch((error) => {
+      console.error('shellyGetDeviceName Error: ', error);
+      return 'shellyGetDeviceName Error:' + error
+    });
 
-// Set Password Accesso - Una volta collegato al WiFi bisogna settare l'autenticazione per tutte le route
-// setAuth()
+  console.log('shellyGetDeviceName response:', response.data.id);
+  return response.data.id
+}
 
-// Toggle Switch On e Off dopo 1 sec
-toggleSwitch()
 
+// Inizializzazione
+
+//shellyGetDeviceName()
+//  .then((realm) => {
+//    console.log('shellyGetDeviceName OK');
+//    // Restituisce il nome del device
+//    ShellyRealm = realm
+//    // Set Password WiFi - Setta la password del WiFi.
+//    shellySetWiFi()
+//      .then((result) => {
+//        // Password WiFi settata - Bisogna ricollegarsi nuovamente specificando la password usata
+//        console.log('setWiFi OK');
+//        // Set Password Accesso - Una volta collegato al WiFi bisogna settare l'autenticazione per tutte le route
+//        shellySetAuth()
+//          .then((result) => {
+//            // Password Auth settata
+//            console.log('shellySetAuth OK');
+//            // Toggle Switch On e Off dopo 1 sec
+//            shellyToggleSwitch()
+//          })
+//      })
+//  })
+//  .catch((error) => {
+//    console.error('shellyGetDeviceName Error: ', error);
+//  });
+
+// Apri Cancello
+shellyToggleSwitch()
