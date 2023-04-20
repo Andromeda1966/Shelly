@@ -123,7 +123,6 @@ http://192.168.33.1/rpc/Shelly.SetAuth?user="admin"&realm="shellyplus1-7c87ce720
 
 * **Esempio: shellySetAuth()**
 
-
 <br/>
 
 
@@ -150,15 +149,14 @@ Il parametro **TOGGLE_AFTER** rappresenta il numero di secondi in cui il disposi
 http://192.168.33.1/rpc/Switch.Set?id=0&on=true&toggle_after=1 
 ```
 <br/>
+
 * **Esempio: shellySetAuth()**
-<br/>
 
 <br/>
-<br/>
 
 
 
-<h2>Autenticazione ()</h2>
+<h2>Metodo di Autenticazione</h2>
 
 L’accesso ai comandi è protetto da autenticazione di tipo DIGEST. <br/>
 Per comandare il relè del device o accedere a qualsiasi comando, sono necessari due passaggi (Fig.3).<br/>
